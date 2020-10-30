@@ -23,9 +23,9 @@ torch.backends.cudnn.benchmark = True # gotta go fast!
 class Logger(object):
     """Duplicates all stdout to a file."""
     def __init__(self, path, resume):
-        if not resume and os.path.exists(path):
-            print(path + " exists")
-            sys.exit(0)
+        # if not resume and os.path.exists(path):
+        #     print(path + " exists")
+        #     sys.exit(0)
 
         iternum = 0
         if resume:

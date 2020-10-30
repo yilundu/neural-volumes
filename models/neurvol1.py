@@ -52,11 +52,16 @@ class Autoencoder(nn.Module):
             result["losses"].update(encout["losses"])
 
         # decode
+        campos = campos.float()
+        camrot = camrot.float()
         decout = self.decoder(encoding, campos, losslist)
         result["losses"].update(decout["losses"])
+        import pdb
+        pdb.set_trace()
 
         # NHWC
         raydir = (pixelcoords - princpt[:, None, None, :]) / focal[:, None, None, :]
+        raydir = raydir.float()
         raydir = torch.cat([raydir, torch.ones_like(raydir[:, :, :, 0:1])], dim=-1)
         raydir = torch.sum(camrot[:, None, None, :, :] * raydir[:, :, :, :, None], dim=-2)
         raydir = raydir / torch.sqrt(torch.sum(raydir ** 2, dim=-1, keepdim=True))
@@ -109,18 +114,21 @@ class Autoencoder(nn.Module):
             samplecoords = pixelcoords * 2. / (imagesize[None, None, None, :] - 1.) - 1.
 
         # color correction / bg
-        if camindex is not None:
-            rayrgb = self.colorcal(rayrgb, camindex)
+        # if camindex is not None:
+        #     rayrgb = self.colorcal(rayrgb, camindex)
 
-            if pixelcoords.size()[1:3] != image.size()[2:4]:
-                bg = F.grid_sample(
-                        torch.stack([self.bg[self.allcameras[camindex[i].item()]] for i in range(campos.size(0))], dim=0),
-                        samplecoords)
-            else:
-                bg = torch.stack([self.bg[self.allcameras[camindex[i].item()]] for i in range(campos.size(0))], dim=0)
+        #     if pixelcoords.size()[1:3] != image.size()[2:4]:
+        #         bg = F.grid_sample(
+        #                 torch.stack([self.bg[self.allcameras[camindex[i].item()]] for i in range(campos.size(0))], dim=0),
+        #                 samplecoords)
+        #     else:
+        #         bg = torch.stack([self.bg[self.allcameras[camindex[i].item()]] for i in range(campos.size(0))], dim=0)
 
-            rayrgb = rayrgb + (1. - rayalpha) * bg.clamp(min=0.)
+        #     rayrgb = rayrgb + (1. - rayalpha) * bg.clamp(min=0.)
 
+        # import pdb
+        # pdb.set_trace()
+        # print(rayrgb)
         if "irgbrec" in outputlist:
             result["irgbrec"] = rayrgb
         if "ialpharec" in outputlist:

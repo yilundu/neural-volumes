@@ -27,6 +27,7 @@ class Encoder(torch.nn.Module):
                 for i in range(1 if self.tied else self.ninputs)])
         self.down2 = nn.Sequential(
                 nn.Linear(256 * self.ninputs * 4 * 3, 512), nn.LeakyReLU(0.2))
+                # nn.Linear(6912, 512), nn.LeakyReLU(0.2))
         height, width = 512, 334
         ypad = ((height + 127) // 128) * 128 - height
         xpad = ((width + 127) // 128) * 128 - width
@@ -42,7 +43,8 @@ class Encoder(torch.nn.Module):
 
     def forward(self, x, losslist=[]):
         x = self.pad(x)
-        x = [self.down1[0 if self.tied else i](x[:, i*3:(i+1)*3, :, :]).view(-1, 256 * 3 * 4) for i in range(self.ninputs)]
+        s = x.size()
+        x = [self.down1[0 if self.tied else i](x[:, i*3:(i+1)*3, :, :]).view(s[0], -1) for i in range(self.ninputs)]
         x = torch.cat(x, dim=1)
         x = self.down2(x)
 

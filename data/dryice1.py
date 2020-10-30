@@ -93,6 +93,7 @@ class Dataset(torch.utils.data.Dataset):
                 "size": np.array([667, 1024])}
                 for k in self.cameras}
 
+
     def known_background(self):
         return "bg" in self.keyfilter
 
@@ -135,8 +136,8 @@ class Dataset(torch.utils.data.Dataset):
         if cam is not None:
             if "camera" in self.keyfilter:
                 # camera data
-                result["camrot"] = np.dot(self.transf[:3, :3].T, self.camrot[cam].T).T
-                result["campos"] = np.dot(self.transf[:3, :3].T, self.campos[cam] - self.transf[:3, 3])
+                result["camrot"] = (np.dot(self.transf[:3, :3].T, self.camrot[cam].T).T).astype(np.float32)
+                result["campos"] = (np.dot(self.transf[:3, :3].T, self.campos[cam] - self.transf[:3, 3])).astype(np.float32)
                 result["focal"] = self.focal[cam]
                 result["princpt"] = self.princpt[cam]
                 result["camindex"] = self.allcameras.index(cam)
