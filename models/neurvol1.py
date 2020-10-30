@@ -56,8 +56,6 @@ class Autoencoder(nn.Module):
         camrot = camrot.float()
         decout = self.decoder(encoding, campos, losslist)
         result["losses"].update(decout["losses"])
-        import pdb
-        pdb.set_trace()
 
         # NHWC
         raydir = (pixelcoords - princpt[:, None, None, :]) / focal[:, None, None, :]

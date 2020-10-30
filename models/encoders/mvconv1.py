@@ -26,8 +26,8 @@ class Encoder(torch.nn.Module):
                 nn.Conv2d(256, 256, 4, 2, 1), nn.LeakyReLU(0.2))
                 for i in range(1 if self.tied else self.ninputs)])
         self.down2 = nn.Sequential(
-                nn.Linear(256 * self.ninputs * 4 * 3, 512), nn.LeakyReLU(0.2))
-                # nn.Linear(6912, 512), nn.LeakyReLU(0.2))
+                # nn.Linear(256 * self.ninputs * 4 * 3, 512), nn.LeakyReLU(0.2))
+                nn.Linear(6912, 512), nn.LeakyReLU(0.2))
         height, width = 512, 334
         ypad = ((height + 127) // 128) * 128 - height
         xpad = ((width + 127) // 128) * 128 - width

@@ -44,11 +44,11 @@ class Dataset(torch.utils.data.Dataset):
         self.basedir = krtpath
         self.subsamplesize = 128
         self.cameras = []
-        self.imagemean = 0.5
-        self.imagestd = 0.5
+        self.imagemean = 100
+        self.imagestd = 25
         self.keyfilter = []
         self.fixedcameras = [1] * 3
-        self.transf = np.eye(3) * 0.03
+        self.transf = np.eye(3) * 0.4
 
     def get_allcameras(self):
         return []
@@ -101,7 +101,7 @@ class Dataset(torch.utils.data.Dataset):
         fixedcamimage[:] /= self.imagestd
         result["fixedcamimage"] = fixedcamimage
 
-        result['camrot'] = np.dot(self.transf, pose[:3, :3].astype(np.float32))
+        result['camrot'] = np.dot(self.transf, pose[:3, :3].astype(np.float32)).T
         result['campos'] = np.dot(self.transf, pose[:3, 3].astype(np.float32))
         result["image"] = image.astype(np.float32)
 

@@ -85,7 +85,7 @@ class Dataset(torch.utils.data.Dataset):
         return self.allcameras
 
     def get_krt(self):
-        return {k: {
+        eturn {k: {
                 "pos": self.campos[k],
                 "rot": self.camrot[k],
                 "focal": self.focal[k],
